@@ -1,25 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import PrivateRoutes from "./utils/PrivateRoutes";
+import ProfilePage from "./pages/Profile";
+import LoginPage from "./pages/Login";
+import HandleGoogleCallback from "./utils/callback";
+import { QueryClientProvider, QueryClient } from "react-query";
+import './App.css'
+import NotFoundPage from "./pages/NotFound";
 
-function App() {
+const App = () => {
+  const queryClient = new QueryClient();
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <QueryClientProvider client={queryClient}>
+      <Router>
+        <Routes>
+          <Route element={<PrivateRoutes />}>
+            <Route element={<ProfilePage />} path="/" exact />
+          </Route>
+          <Route element={<LoginPage />} path="/login" />
+          <Route
+            element={<HandleGoogleCallback />}
+            path="/api/auth/google/callback"
+          />
+          <Route element={<NotFoundPage />} path="*" />
+        </Routes>
+      </Router>
+    </QueryClientProvider>
   );
-}
+};
 
 export default App;
